@@ -2,8 +2,8 @@
 
 A full-stack Task Manager web application built with **FastAPI** (backend) and **plain HTML/CSS/JS** (frontend). Built as part of the Weboin Tech Python Developer Internship assignment.
 
-**Live Demo:** `https://your-app.onrender.com` ← replace after deployment  
-**API Docs:** `https://your-app.onrender.com/docs`
+**Live Demo:** `https://task-manager-1cie.onrender.com/` ← replace after deployment  
+**API Docs:** `https://task-manager-1cie.onrender.com/docs`
 
 ---
 
@@ -24,7 +24,7 @@ A full-stack Task Manager web application built with **FastAPI** (backend) and *
 | Layer     | Technology                        |
 |-----------|-----------------------------------|
 | Backend   | FastAPI, SQLAlchemy, Pydantic     |
-| Auth      | JWT (python-jose), bcrypt (passlib) |
+| Auth      | JWT (python-jose), bcrypt(passlib)|
 | Database  | SQLite (local) / configurable     |
 | Frontend  | HTML5, CSS3, Vanilla JavaScript   |
 | Testing   | pytest, FastAPI TestClient        |
@@ -74,7 +74,7 @@ task-manager/
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/task-manager.git
+git clone https://github.com/Kowshek/task-manager.git
 cd task-manager
 
 # 2. Create a virtual environment

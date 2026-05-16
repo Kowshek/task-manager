@@ -183,8 +183,58 @@
     /* ── Empty state ── */
     .empty { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; }
 
-    /* ── Logout ── */
-    #logout-btn { display: none; }
+    /* ── Profile dropdown ── */
+    .profile-wrapper { position: relative; display: none; }
+    .profile-wrapper.visible { display: block; }
+    .profile-btn {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.35rem 0.85rem;
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .profile-btn:hover { border-color: var(--accent); }
+    .profile-avatar {
+      width: 24px; height: 24px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: #fff;
+    }
+    .profile-dropdown {
+      position: absolute; right: 0; top: calc(100% + 8px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      min-width: 180px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+    .profile-dropdown.open { display: block; }
+    .dropdown-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .dropdown-header strong { display: block; color: var(--text); font-size: 0.9rem; margin-bottom: 2px; }
+    .dropdown-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.65rem 1rem;
+      font-size: 0.875rem;
+      color: var(--text);
+      cursor: pointer;
+      border: none; background: none; width: 100%; text-align: left;
+      transition: background 0.1s;
+    }
+    .dropdown-item:hover { background: var(--surface2); }
+    .dropdown-item.danger { color: #ef4444; }
 
     /* ── Responsive ── */
     @media (max-width: 600px) {
@@ -197,9 +247,21 @@
 
 <header>
   <h1>⚡ Task Manager</h1>
-  <div style="display:flex;align-items:center;gap:1rem;">
-    <span id="user-info"></span>
-    <button id="logout-btn" class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+  <div class="profile-wrapper" id="profile-wrapper">
+    <button class="profile-btn" onclick="toggleDropdown()" id="profile-btn">
+      <div class="profile-avatar" id="profile-avatar">?</div>
+      <span id="user-info"></span>
+      <span style="font-size:0.7rem;color:var(--text-muted);">▾</span>
+    </button>
+    <div class="profile-dropdown" id="profile-dropdown">
+      <div class="dropdown-header">
+        <strong id="dropdown-username"></strong>
+        Signed in
+      </div>
+      <button class="dropdown-item danger" onclick="logout()">
+        <span>⏻</span> Logout
+      </button>
+    </div>
   </div>
 </header>
 
@@ -385,6 +447,17 @@
     }
   }
 
+  // ── Profile dropdown ─────────────────────────────────────────────────
+  function toggleDropdown() {
+    document.getElementById('profile-dropdown').classList.toggle('open');
+  }
+  // Close dropdown if clicking outside
+  document.addEventListener('click', e => {
+    const btn = document.getElementById('profile-btn');
+    const dd  = document.getElementById('profile-dropdown');
+    if (dd && !btn?.contains(e.target)) dd.classList.remove('open');
+  });
+
   // ── Logout ───────────────────────────────────────────────────────────
   function logout() {
     token = null; currentUser = null;
@@ -392,7 +465,8 @@
     localStorage.removeItem('tm_user');
     document.getElementById('auth-section').style.display = '';
     document.getElementById('app-section').style.display = 'none';
-    document.getElementById('logout-btn').style.display = 'none';
+    document.getElementById('profile-wrapper').classList.remove('visible');
+    document.getElementById('profile-dropdown').classList.remove('open');
     document.getElementById('user-info').textContent = '';
   }
 
@@ -400,8 +474,11 @@
   function showApp() {
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('app-section').style.display = '';
-    document.getElementById('logout-btn').style.display = '';
-    document.getElementById('user-info').textContent = `👤 ${currentUser}`;
+    document.getElementById('profile-wrapper').classList.add('visible');
+    document.getElementById('user-info').textContent = currentUser;
+    document.getElementById('dropdown-username').textContent = currentUser;
+    // Avatar: first letter of username
+    document.getElementById('profile-avatar').textContent = currentUser.charAt(0).toUpperCase();
     loadTasks();
   }
 

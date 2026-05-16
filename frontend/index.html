@@ -3,611 +3,774 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Task Manager</title>
+  <title>TaskFlow</title>
   <style>
-    /* ── Reset & Base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface2: #334155;
-      --border: #475569;
-      --accent: #6366f1;
-      --accent-hover: #4f46e5;
-      --danger: #ef4444;
-      --success: #22c55e;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --radius: 8px;
+      --zinc-950: #09090b;
+      --zinc-900: #18181b;
+      --zinc-800: #27272a;
+      --zinc-700: #3f3f46;
+      --zinc-600: #52525b;
+      --zinc-500: #71717a;
+      --zinc-400: #a1a1aa;
+      --zinc-300: #d4d4d8;
+      --zinc-100: #f4f4f5;
+      --amber-400: #fbbf24;
+      --amber-300: #fcd34d;
+      --emerald-600: #059669;
+      --red-400: #f87171;
+      --red-500: #ef4444;
     }
 
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background: var(--zinc-950);
+      color: var(--zinc-100);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
-    /* ── Layout ── */
-    header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 2rem;
+    /* ── AUTH SCREENS ────────────────────────────────── */
+    .auth-screen {
+      min-height: 100vh;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      padding: 1rem;
     }
-    header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.5px; }
-    header span { font-size: 0.875rem; color: var(--text-muted); }
-
-    main { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-
-    /* ── Cards / Panels ── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-    /* ── Tabs ── */
-    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-    .tab-btn {
-      padding: 0.5rem 1.25rem;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-muted);
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-size: 0.875rem;
-      transition: all 0.15s;
-    }
-    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .tab-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
-
-    /* ── Forms ── */
-    .form-group { margin-bottom: 1rem; }
-    label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.35rem; }
-    input, textarea {
+    .auth-box {
       width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      padding: 0.6rem 0.75rem;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.15s;
+      max-width: 360px;
     }
-    input:focus, textarea:focus { border-color: var(--accent); }
-    textarea { resize: vertical; min-height: 80px; }
-
-    /* ── Buttons ── */
-    .btn {
-      padding: 0.6rem 1.25rem;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 0.875rem;
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2rem;
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: var(--amber-400);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: var(--zinc-950);
+      flex-shrink: 0;
+    }
+    .logo-name {
       font-weight: 600;
-      cursor: pointer;
+      color: white;
+      letter-spacing: -0.02em;
+      font-size: 15px;
+    }
+    .auth-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 6px;
+    }
+    .auth-subtitle {
+      color: var(--zinc-400);
+      font-size: 13px;
+    }
+    .auth-fields { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 16px; }
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--zinc-300);
+      margin-bottom: 6px;
+    }
+    .field-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .field-row .field-label { margin-bottom: 0; }
+    input[type="text"], input[type="email"], input[type="password"], textarea {
+      width: 100%;
+      background: var(--zinc-900);
+      border: 1px solid var(--zinc-800);
+      border-radius: 8px;
+      padding: 0 12px;
+      height: 40px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      font-family: inherit;
+    }
+    textarea {
+      height: auto;
+      padding: 10px 12px;
+      resize: none;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--amber-400);
+      box-shadow: 0 0 0 2px rgba(251,191,36,0.15);
+    }
+    input::placeholder, textarea::placeholder { color: var(--zinc-600); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer; font-family: inherit;
+      font-weight: 600; border-radius: 8px; transition: background 0.15s;
+    }
+    .btn-primary {
+      background: var(--amber-400);
+      color: var(--zinc-950);
+      height: 40px; width: 100%;
+      font-size: 14px; margin-top: 4px;
+    }
+    .btn-primary:hover { background: var(--amber-300); }
+    .btn-sm {
+      background: var(--amber-400);
+      color: var(--zinc-950);
+      height: 36px; padding: 0 20px;
+      font-size: 13px;
+    }
+    .btn-sm:hover { background: var(--amber-300); }
+    .forgot-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--amber-400); font-size: 12px;
+    }
+    .forgot-btn:hover { color: var(--amber-300); }
+    .auth-footer {
+      text-align: center; margin-top: 24px;
+      font-size: 13px; color: var(--zinc-500);
+    }
+    .auth-link {
+      background: none; border: none; cursor: pointer;
+      color: var(--amber-400); font-weight: 500; font-size: 13px;
+    }
+    .auth-link:hover { color: var(--amber-300); }
+
+    /* ── ALERT ────────────────────────────────────────── */
+    .alert {
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; margin-bottom: 16px;
+      display: none;
+    }
+    .alert.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); color: var(--red-400); }
+    .alert.success { background: rgba(5,150,105,0.1); border: 1px solid rgba(5,150,105,0.25); color: #34d399; }
+    .alert.show { display: block; }
+
+    /* ── APP LAYOUT ──────────────────────────────────── */
+    #app-view { display: none; }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(9,9,11,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(39,39,42,0.6);
+    }
+    .header-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 16px;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-logo { width: 24px; height: 24px; font-size: 11px; }
+    .pending-badge {
+      background: rgba(251,191,36,0.12);
+      color: var(--amber-400);
+      font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 20px;
+    }
+
+    /* User menu */
+    .user-menu { position: relative; }
+    .user-trigger {
+      display: flex; align-items: center; gap: 8px;
+      background: none; border: none; cursor: pointer;
+      padding: 4px 10px 4px 4px;
+      border-radius: 100px;
       transition: background 0.15s;
     }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-hover); }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-danger:hover { background: #dc2626; }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-success:hover { background: #16a34a; }
-    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
-
-    /* ── Alerts ── */
-    .alert {
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius);
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
-      display: none;
-    }
-    .alert.show { display: block; }
-    .alert-error { background: #450a0a; border: 1px solid var(--danger); color: #fca5a5; }
-    .alert-success { background: #052e16; border: 1px solid var(--success); color: #86efac; }
-
-    /* ── Task list ── */
-    #task-list { display: flex; flex-direction: column; gap: 0.75rem; }
-
-    .task-item {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    .task-item.completed { opacity: 0.6; }
-    .task-item.completed .task-title { text-decoration: line-through; }
-
-    .task-check {
-      width: 18px; height: 18px; min-width: 18px;
-      border: 2px solid var(--border);
-      border-radius: 4px;
-      cursor: pointer;
+    .user-trigger:hover { background: rgba(39,39,42,0.6); }
+    .avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber-400), #f97316);
       display: flex; align-items: center; justify-content: center;
-      background: transparent;
-      transition: all 0.15s;
-      margin-top: 2px;
+      font-size: 11px; font-weight: 700; color: var(--zinc-950);
+      flex-shrink: 0;
     }
-    .task-check.done { background: var(--success); border-color: var(--success); }
-    .task-check.done::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; }
-
-    .task-content { flex: 1; }
-    .task-title { font-weight: 600; font-size: 0.95rem; }
-    .task-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
-    .task-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; }
-
-    .task-actions { display: flex; gap: 0.5rem; align-items: center; }
-
-    /* ── Filters ── */
-    .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap; }
-    .filter-bar span { font-size: 0.8rem; color: var(--text-muted); }
-    .filter-btn {
-      padding: 0.3rem 0.75rem;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-muted);
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: all 0.15s;
+    .user-trigger span {
+      font-size: 13px; color: var(--zinc-300); font-weight: 500;
     }
-    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-    /* ── Pagination ── */
-    .pagination { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; align-items: center; }
-    .pagination button {
-      padding: 0.4rem 0.85rem;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text);
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-size: 0.8rem;
+    .chevron {
+      width: 14px; height: 14px; color: var(--zinc-500);
     }
-    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
-    .pagination button.current { background: var(--accent); border-color: var(--accent); }
-    .pagination span { font-size: 0.8rem; color: var(--text-muted); }
-
-    /* ── Empty state ── */
-    .empty { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; }
-
-    /* ── Profile dropdown ── */
-    .profile-wrapper { position: relative; display: none; }
-    .profile-wrapper.visible { display: block; }
-    .profile-btn {
-      display: flex; align-items: center; gap: 0.5rem;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 0.35rem 0.85rem;
-      color: var(--text);
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
-    .profile-btn:hover { border-color: var(--accent); }
-    .profile-avatar {
-      width: 24px; height: 24px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem; font-weight: 700; color: #fff;
-    }
-    .profile-dropdown {
-      position: absolute; right: 0; top: calc(100% + 8px);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      min-width: 180px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      display: none;
-      z-index: 100;
+    .dropdown {
+      position: absolute; right: 0; top: calc(100% + 6px);
+      background: var(--zinc-900);
+      border: 1px solid var(--zinc-800);
+      border-radius: 10px;
+      min-width: 200px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
       overflow: hidden;
+      display: none; z-index: 200;
     }
-    .profile-dropdown.open { display: block; }
-    .dropdown-header {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .dropdown.open { display: block; }
+    .dropdown-label {
+      padding: 10px 14px;
+      font-size: 11px; color: var(--zinc-500);
+      border-bottom: 1px solid var(--zinc-800);
     }
-    .dropdown-header strong { display: block; color: var(--text); font-size: 0.9rem; margin-bottom: 2px; }
+    .dropdown-label strong { color: white; font-weight: 600; }
     .dropdown-item {
-      display: flex; align-items: center; gap: 0.6rem;
-      padding: 0.65rem 1rem;
-      font-size: 0.875rem;
-      color: var(--text);
-      cursor: pointer;
-      border: none; background: none; width: 100%; text-align: left;
-      transition: background 0.1s;
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 10px 14px;
+      background: none; border: none; cursor: pointer;
+      font-size: 13px; color: var(--red-400);
+      transition: background 0.12s;
+      font-family: inherit; text-align: left;
     }
-    .dropdown-item:hover { background: var(--surface2); }
-    .dropdown-item.danger { color: #ef4444; }
+    .dropdown-item:hover { background: var(--zinc-800); color: var(--red-400); }
 
-    /* ── Responsive ── */
-    @media (max-width: 600px) {
-      .task-item { flex-direction: column; }
-      .task-actions { justify-content: flex-end; }
+    /* ── MAIN CONTENT ────────────────────────────────── */
+    main {
+      max-width: 720px; margin: 0 auto;
+      padding: 32px 16px;
     }
+
+    /* New task card */
+    .card {
+      background: var(--zinc-900);
+      border: 1px solid rgba(39,39,42,0.6);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+      margin-bottom: 24px;
+    }
+    .card-header {
+      padding: 20px 20px 0;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--zinc-500);
+    }
+    .card-body { padding: 14px 20px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .card-body input { background: rgba(39,39,42,0.6); border-color: rgba(63,63,70,0.5); }
+    .card-body textarea { background: rgba(39,39,42,0.6); border-color: rgba(63,63,70,0.5); }
+    .card-actions { display: flex; justify-content: flex-end; }
+
+    /* Task list header */
+    .list-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .list-title {
+      font-size: 13px; font-weight: 600; color: var(--zinc-300);
+    }
+    .list-count { color: var(--zinc-600); font-weight: 400; margin-left: 8px; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: var(--zinc-900);
+      border: 1px solid var(--zinc-800);
+      border-radius: 8px;
+      padding: 3px; gap: 2px;
+    }
+    .tab {
+      background: none; border: none; cursor: pointer;
+      padding: 0 12px; height: 28px; border-radius: 6px;
+      font-size: 12px; font-weight: 500; color: var(--zinc-400);
+      transition: background 0.12s, color 0.12s;
+      font-family: inherit;
+    }
+    .tab.active {
+      background: var(--zinc-700);
+      color: white;
+    }
+
+    /* Task items */
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+    .task-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--zinc-900);
+      border: 1px solid rgba(39,39,42,0.6);
+      border-radius: 10px;
+      padding: 14px 16px;
+      transition: border-color 0.15s;
+      position: relative;
+    }
+    .task-item:hover { border-color: rgba(63,63,70,0.8); }
+    .task-item.done { border-color: rgba(39,39,42,0.4); opacity: 0.6; }
+
+    /* Custom checkbox */
+    .checkbox-wrap {
+      position: relative; flex-shrink: 0; margin-top: 2px;
+    }
+    .checkbox-wrap input[type="checkbox"] {
+      position: absolute; opacity: 0; width: 0; height: 0;
+    }
+    .checkbox-custom {
+      width: 16px; height: 16px; border-radius: 4px;
+      border: 1.5px solid var(--zinc-600);
+      background: transparent;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .checkbox-wrap input:checked + .checkbox-custom {
+      background: var(--amber-400);
+      border-color: var(--amber-400);
+    }
+    .checkbox-custom svg { display: none; }
+    .checkbox-wrap input:checked + .checkbox-custom svg { display: block; }
+
+    .task-body { flex: 1; min-width: 0; }
+    .task-title {
+      font-size: 13px; font-weight: 500; color: var(--zinc-100);
+      line-height: 1.4;
+    }
+    .task-title.done { text-decoration: line-through; color: var(--zinc-500); }
+    .task-desc {
+      font-size: 12px; color: var(--zinc-500);
+      margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .task-meta {
+      font-size: 11px; color: var(--zinc-700); margin-top: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .status-done { color: var(--emerald-600); }
+    .status-pending { color: var(--zinc-500); }
+    .meta-dot { color: var(--zinc-800); }
+
+    .task-delete {
+      background: none; border: none; cursor: pointer;
+      color: var(--zinc-600); padding: 4px; border-radius: 6px;
+      flex-shrink: 0; margin-top: 2px;
+      opacity: 0; transition: opacity 0.15s, color 0.15s;
+      display: flex;
+    }
+    .task-item:hover .task-delete { opacity: 1; }
+    .task-delete:hover { color: var(--red-400); }
+
+    /* Pagination */
+    .pagination {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-top: 20px;
+    }
+    .page-btn {
+      background: var(--zinc-900); border: 1px solid var(--zinc-800);
+      color: var(--zinc-300); border-radius: 6px;
+      padding: 0 12px; height: 32px; cursor: pointer;
+      font-size: 12px; font-weight: 500;
+      transition: background 0.12s; font-family: inherit;
+    }
+    .page-btn:hover:not(:disabled) { background: var(--zinc-800); }
+    .page-btn:disabled { opacity: 0.4; cursor: default; }
+    .page-info { font-size: 12px; color: var(--zinc-500); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 64px 16px;
+      color: var(--zinc-600);
+    }
+    .empty-icon { font-size: 36px; margin-bottom: 12px; }
+    .empty-text { font-size: 13px; }
+
+    /* Loading */
+    .loading {
+      text-align: center; padding: 32px;
+      color: var(--zinc-600); font-size: 13px;
+    }
+
+    /* Hidden */
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>⚡ Task Manager</h1>
-  <div class="profile-wrapper" id="profile-wrapper">
-    <button class="profile-btn" onclick="toggleDropdown()" id="profile-btn">
-      <div class="profile-avatar" id="profile-avatar">?</div>
-      <span id="user-info"></span>
-      <span style="font-size:0.7rem;color:var(--text-muted);">▾</span>
-    </button>
-    <div class="profile-dropdown" id="profile-dropdown">
-      <div class="dropdown-header">
-        <strong id="dropdown-username"></strong>
-        Signed in
-      </div>
-      <button class="dropdown-item danger" onclick="logout()">
-        <span>⏻</span> Logout
-      </button>
+<!-- ── LOGIN ─────────────────────────────────────── -->
+<div id="login-view" class="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="logo-icon">T</div>
+      <span class="logo-name">TaskFlow</span>
     </div>
+    <h1 class="auth-title">Welcome back</h1>
+    <p class="auth-subtitle">Sign in to your account to continue</p>
+    <div id="login-alert" class="alert error"></div>
+    <div class="auth-fields">
+      <div>
+        <label class="field-label">Username</label>
+        <input type="text" id="login-username" placeholder="your_username" autocomplete="username" />
+      </div>
+      <div>
+        <div class="field-row">
+          <label class="field-label">Password</label>
+          <button class="forgot-btn">Forgot?</button>
+        </div>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button class="btn btn-primary" onclick="login()">Sign in</button>
+    </div>
+    <p class="auth-footer">
+      No account?
+      <button class="auth-link" onclick="showView('register')">Create one</button>
+    </p>
   </div>
-</header>
+</div>
 
-<main>
-  <!-- ── Auth Section ── -->
-  <div id="auth-section">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-      <button class="tab-btn" onclick="switchTab('register')">Register</button>
+<!-- ── REGISTER ───────────────────────────────────── -->
+<div id="register-view" class="auth-screen hidden">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="logo-icon">T</div>
+      <span class="logo-name">TaskFlow</span>
     </div>
-
-    <!-- Login -->
-    <div id="login-panel" class="card">
-      <h2>Login</h2>
-      <div id="login-alert" class="alert"></div>
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="login-username" placeholder="your_username" />
+    <h1 class="auth-title">Create account</h1>
+    <p class="auth-subtitle">Get started — it takes 30 seconds</p>
+    <div id="register-alert" class="alert error"></div>
+    <div class="auth-fields">
+      <div>
+        <label class="field-label">Username</label>
+        <input type="text" id="reg-username" placeholder="min. 3 characters" autocomplete="username" />
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="login-password" placeholder="••••••••" />
+      <div>
+        <label class="field-label">Email</label>
+        <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" />
       </div>
-      <button class="btn btn-primary" onclick="login()">Login</button>
+      <div>
+        <label class="field-label">Password</label>
+        <input type="password" id="reg-password" placeholder="min. 6 characters" autocomplete="new-password" />
+      </div>
+      <button class="btn btn-primary" onclick="register()">Create account</button>
     </div>
-
-    <!-- Register -->
-    <div id="register-panel" class="card" style="display:none;">
-      <h2>Create Account</h2>
-      <div id="register-alert" class="alert"></div>
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="reg-username" placeholder="your_username" />
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="reg-email" placeholder="you@example.com" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="reg-password" placeholder="min 6 characters" />
-      </div>
-      <button class="btn btn-primary" onclick="register()">Create Account</button>
-    </div>
+    <p class="auth-footer">
+      Have an account?
+      <button class="auth-link" onclick="showView('login')">Sign in</button>
+    </p>
   </div>
+</div>
 
-  <!-- ── App Section ── -->
-  <div id="app-section" style="display:none;">
+<!-- ── APP ───────────────────────────────────────── -->
+<div id="app-view" class="hidden">
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="logo-icon header-logo">T</div>
+        <span class="logo-name">TaskFlow</span>
+        <span id="pending-badge" class="pending-badge hidden"></span>
+      </div>
+      <div class="user-menu">
+        <button class="user-trigger" onclick="toggleDropdown()">
+          <div class="avatar" id="header-avatar"></div>
+          <span id="header-username"></span>
+          <svg class="chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div class="dropdown" id="user-dropdown">
+          <div class="dropdown-label">Signed in as <strong id="dropdown-username"></strong></div>
+          <button class="dropdown-item" onclick="logout()">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-    <!-- Create Task -->
+  <main>
+    <!-- New task form -->
     <div class="card">
-      <h2>New Task</h2>
-      <div id="create-alert" class="alert"></div>
-      <div class="form-group">
-        <label>Title *</label>
-        <input type="text" id="task-title" placeholder="What needs to be done?" />
+      <div class="card-header">New task</div>
+      <div class="card-body">
+        <input type="text" id="task-title" placeholder="What needs to be done?"
+          onkeydown="if(event.key==='Enter') createTask()" />
+        <textarea id="task-desc" rows="2" placeholder="Add a description… (optional)"></textarea>
+        <div class="card-actions">
+          <button class="btn btn-sm" onclick="createTask()">Add task</button>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Description (optional)</label>
-        <textarea id="task-desc" placeholder="Add details..."></textarea>
-      </div>
-      <button class="btn btn-primary" onclick="createTask()">Add Task</button>
     </div>
 
-    <!-- Task List -->
-    <div class="card">
-      <h2>My Tasks <span id="task-count" style="font-weight:400;font-size:0.85rem;"></span></h2>
-
-      <div class="filter-bar">
-        <span>Filter:</span>
-        <button class="filter-btn active" onclick="setFilter(null, this)">All</button>
-        <button class="filter-btn" onclick="setFilter(false, this)">Pending</button>
-        <button class="filter-btn" onclick="setFilter(true, this)">Completed</button>
+    <!-- Task list -->
+    <div class="list-header">
+      <div class="list-title">My Tasks <span class="list-count" id="task-count"></span></div>
+      <div class="tabs">
+        <button class="tab active" data-filter="all" onclick="setFilter('all', this)">All</button>
+        <button class="tab" data-filter="pending" onclick="setFilter('pending', this)">Pending</button>
+        <button class="tab" data-filter="completed" onclick="setFilter('completed', this)">Done</button>
       </div>
-
-      <div id="task-list"><div class="empty">Loading...</div></div>
-      <div class="pagination" id="pagination"></div>
     </div>
-  </div>
-</main>
+
+    <div id="task-list-container">
+      <div class="loading">Loading tasks…</div>
+    </div>
+
+    <div id="pagination" class="pagination hidden">
+      <button class="page-btn" id="prev-btn" onclick="changePage(-1)">← Prev</button>
+      <span class="page-info" id="page-info"></span>
+      <button class="page-btn" id="next-btn" onclick="changePage(1)">Next →</button>
+    </div>
+  </main>
+</div>
 
 <script>
-  // ── Config ──────────────────────────────────────────────────────────
-  // In production on Render, the API and frontend share the same origin,
-  // so an empty base URL works. For local dev where backend runs on :8000
-  // and you open index.html directly, change this to 'http://localhost:8000'
-  const API = window.location.hostname === 'localhost' && window.location.port !== '8000'
-    ? 'http://localhost:8000'
-    : '';
-
-  // ── State ────────────────────────────────────────────────────────────
-  let token = localStorage.getItem('tm_token') || null;
-  let currentUser = localStorage.getItem('tm_user') || null;
-  let currentFilter = null;  // null=all, false=pending, true=completed
+  const API = "";
+  let token = localStorage.getItem("token") || null;
+  let currentUser = localStorage.getItem("username") || null;
+  let currentFilter = "all";
   let currentPage = 1;
-  const PAGE_LIMIT = 5;
+  const PAGE_SIZE = 10;
 
-  // ── Boot ─────────────────────────────────────────────────────────────
-  window.onload = () => {
-    if (token) showApp();
-  };
-
-  // ── Tabs ─────────────────────────────────────────────────────────────
-  function switchTab(tab) {
-    document.getElementById('login-panel').style.display    = tab === 'login'    ? '' : 'none';
-    document.getElementById('register-panel').style.display = tab === 'register' ? '' : 'none';
-    document.querySelectorAll('.tab-btn').forEach((b, i) => {
-      b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+  // ── Utils ──────────────────────────────────────────────
+  function showView(view) {
+    ["login-view","register-view","app-view"].forEach(id => {
+      document.getElementById(id).classList.add("hidden");
     });
+    document.getElementById(view + "-view").classList.remove("hidden");
+    clearAlerts();
   }
 
-  // ── Auth helpers ──────────────────────────────────────────────────────
-  function showAlert(id, message, type = 'error') {
+  function showAlert(id, msg, type = "error") {
     const el = document.getElementById(id);
-    // Pydantic validation errors return detail as an array of objects
-    if (Array.isArray(message)) {
-      message = message.map(e => e.msg || JSON.stringify(e)).join(', ');
-    } else if (typeof message === 'object' && message !== null) {
-      message = message.msg || JSON.stringify(message);
+    if (!el) return;
+    if (Array.isArray(msg)) {
+      msg = msg.map(e => e.msg || JSON.stringify(e)).join(", ");
+    } else if (typeof msg === "object") {
+      msg = JSON.stringify(msg);
     }
-    el.textContent = message;
-    el.className = `alert alert-${type} show`;
+    el.textContent = msg;
+    el.className = "alert " + type + " show";
   }
-  function hideAlert(id) {
-    document.getElementById(id).className = 'alert';
+
+  function clearAlerts() {
+    document.querySelectorAll(".alert").forEach(el => {
+      el.className = "alert error";
+      el.textContent = "";
+    });
   }
 
   async function apiFetch(path, options = {}) {
-    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const res = await fetch(`${API}${path}`, { ...options, headers });
-    const data = res.status === 204 ? null : await res.json();
+    const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+    if (token) headers["Authorization"] = "Bearer " + token;
+    const res = await fetch(API + path, { ...options, headers });
+    let data;
+    try { data = await res.json(); } catch { data = {}; }
     return { ok: res.ok, status: res.status, data };
   }
 
-  // ── Register ──────────────────────────────────────────────────────────
+  // ── Auth ──────────────────────────────────────────────
   async function register() {
-    hideAlert('register-alert');
-    const username = document.getElementById('reg-username').value.trim();
-    const email    = document.getElementById('reg-email').value.trim();
-    const password = document.getElementById('reg-password').value;
-
-    if (!username || !email || !password) {
-      return showAlert('register-alert', 'All fields are required.');
-    }
-
-    const { ok, data } = await apiFetch('/register', {
-      method: 'POST',
-      body: JSON.stringify({ username, email, password }),
+    const username = document.getElementById("reg-username").value.trim();
+    const email    = document.getElementById("reg-email").value.trim();
+    const password = document.getElementById("reg-password").value;
+    const { ok, data } = await apiFetch("/register", {
+      method: "POST",
+      body: JSON.stringify({ username, email, password })
     });
-
-    if (ok) {
-      showAlert('register-alert', `Account created! Welcome, ${data.username}. Please login.`, 'success');
-      setTimeout(() => switchTab('login'), 1500);
-    } else {
-      showAlert('register-alert', data.detail || 'Registration failed.');
-    }
+    if (!ok) { showAlert("register-alert", data.detail || "Registration failed"); return; }
+    showAlert("register-alert", "Account created! Signing you in…", "success");
+    setTimeout(() => loginWith(username, password), 800);
   }
 
-  // ── Login ────────────────────────────────────────────────────────────
   async function login() {
-    hideAlert('login-alert');
-    const username = document.getElementById('login-username').value.trim();
-    const password = document.getElementById('login-password').value;
+    const username = document.getElementById("login-username").value.trim();
+    const password = document.getElementById("login-password").value;
+    await loginWith(username, password);
+  }
 
-    if (!username || !password) {
-      return showAlert('login-alert', 'Username and password required.');
-    }
-
-    const { ok, data } = await apiFetch('/login', {
-      method: 'POST',
-      body: JSON.stringify({ username, password }),
+  async function loginWith(username, password) {
+    const { ok, data } = await apiFetch("/login", {
+      method: "POST",
+      body: JSON.stringify({ username, password })
     });
-
-    if (ok) {
-      token = data.access_token;
-      currentUser = username;
-      localStorage.setItem('tm_token', token);
-      localStorage.setItem('tm_user', username);
-      showApp();
-    } else {
-      showAlert('login-alert', data.detail || 'Login failed.');
-    }
+    if (!ok) { showAlert("login-alert", data.detail || "Invalid credentials"); return; }
+    token = data.access_token;
+    currentUser = username;
+    localStorage.setItem("token", token);
+    localStorage.setItem("username", username);
+    showApp();
   }
 
-  // ── Profile dropdown ─────────────────────────────────────────────────
-  function toggleDropdown() {
-    document.getElementById('profile-dropdown').classList.toggle('open');
-  }
-  // Close dropdown if clicking outside
-  document.addEventListener('click', e => {
-    const btn = document.getElementById('profile-btn');
-    const dd  = document.getElementById('profile-dropdown');
-    if (dd && !btn?.contains(e.target)) dd.classList.remove('open');
-  });
-
-  // ── Logout ───────────────────────────────────────────────────────────
   function logout() {
     token = null; currentUser = null;
-    localStorage.removeItem('tm_token');
-    localStorage.removeItem('tm_user');
-    document.getElementById('auth-section').style.display = '';
-    document.getElementById('app-section').style.display = 'none';
-    document.getElementById('profile-wrapper').classList.remove('visible');
-    document.getElementById('profile-dropdown').classList.remove('open');
-    document.getElementById('user-info').textContent = '';
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    document.getElementById("user-dropdown").classList.remove("open");
+    showView("login");
   }
 
-  // ── Show App ─────────────────────────────────────────────────────────
-  function showApp() {
-    document.getElementById('auth-section').style.display = 'none';
-    document.getElementById('app-section').style.display = '';
-    document.getElementById('profile-wrapper').classList.add('visible');
-    document.getElementById('user-info').textContent = currentUser;
-    document.getElementById('dropdown-username').textContent = currentUser;
-    // Avatar: first letter of username
-    document.getElementById('profile-avatar').textContent = currentUser.charAt(0).toUpperCase();
-    loadTasks();
+  function toggleDropdown() {
+    document.getElementById("user-dropdown").classList.toggle("open");
   }
-
-  // ── Create Task ───────────────────────────────────────────────────────
-  async function createTask() {
-    hideAlert('create-alert');
-    const title = document.getElementById('task-title').value.trim();
-    const description = document.getElementById('task-desc').value.trim() || null;
-
-    if (!title) return showAlert('create-alert', 'Title is required.');
-
-    const { ok, data } = await apiFetch('/tasks', {
-      method: 'POST',
-      body: JSON.stringify({ title, description }),
-    });
-
-    if (ok) {
-      document.getElementById('task-title').value = '';
-      document.getElementById('task-desc').value = '';
-      showAlert('create-alert', 'Task created!', 'success');
-      setTimeout(() => hideAlert('create-alert'), 1500);
-      currentPage = 1;
-      loadTasks();
-    } else if (data?.detail === 'Invalid or expired token') {
-      logout();
-    } else {
-      showAlert('create-alert', data?.detail || 'Failed to create task.');
-    }
-  }
-
-  // ── Load Tasks ────────────────────────────────────────────────────────
-  async function loadTasks() {
-    let url = `/tasks?page=${currentPage}&limit=${PAGE_LIMIT}`;
-    if (currentFilter !== null) url += `&completed=${currentFilter}`;
-
-    const { ok, data } = await apiFetch(url);
-    if (!ok) { if (data?.detail === 'Invalid or expired token') logout(); return; }
-
-    renderTasks(data);
-  }
-
-  function renderTasks({ tasks, total, page, limit }) {
-    const list = document.getElementById('task-list');
-    const totalPages = Math.ceil(total / limit) || 1;
-
-    document.getElementById('task-count').textContent = `(${total} total)`;
-
-    if (tasks.length === 0) {
-      list.innerHTML = '<div class="empty">No tasks here. Go create one! 🎯</div>';
-    } else {
-      list.innerHTML = tasks.map(task => `
-        <div class="task-item ${task.completed ? 'completed' : ''}" id="task-${task.id}">
-          <div class="task-check ${task.completed ? 'done' : ''}" onclick="toggleTask(${task.id}, ${task.completed})"></div>
-          <div class="task-content">
-            <div class="task-title">${escHtml(task.title)}</div>
-            ${task.description ? `<div class="task-desc">${escHtml(task.description)}</div>` : ''}
-            <div class="task-meta">
-              ${task.completed ? '✅ Completed' : '🕐 Pending'} &nbsp;·&nbsp;
-              Created ${formatDate(task.created_at)}
-            </div>
-          </div>
-          <div class="task-actions">
-            <button class="btn btn-danger btn-sm" onclick="deleteTask(${task.id})">Delete</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Pagination
-    const pag = document.getElementById('pagination');
-    if (totalPages <= 1) { pag.innerHTML = ''; return; }
-
-    pag.innerHTML = `
-      <button onclick="goPage(${page - 1})" ${page <= 1 ? 'disabled' : ''}>← Prev</button>
-      <span>Page ${page} of ${totalPages}</span>
-      <button onclick="goPage(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Next →</button>
-    `;
-  }
-
-  // ── Toggle Complete ───────────────────────────────────────────────────
-  async function toggleTask(id, currentlyCompleted) {
-    const { ok, data } = await apiFetch(`/tasks/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ completed: !currentlyCompleted }),
-    });
-    if (ok) loadTasks();
-    else if (data?.detail === 'Invalid or expired token') logout();
-  }
-
-  // ── Delete Task ───────────────────────────────────────────────────────
-  async function deleteTask(id) {
-    if (!confirm('Delete this task?')) return;
-    const { ok, status } = await apiFetch(`/tasks/${id}`, { method: 'DELETE' });
-    if (ok || status === 204) {
-      if (currentPage > 1) currentPage--;
-      loadTasks();
-    }
-  }
-
-  // ── Filter ───────────────────────────────────────────────────────────
-  function setFilter(value, btn) {
-    currentFilter = value;
-    currentPage = 1;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    loadTasks();
-  }
-
-  // ── Pagination ────────────────────────────────────────────────────────
-  function goPage(p) {
-    currentPage = p;
-    loadTasks();
-  }
-
-  // ── Utilities ─────────────────────────────────────────────────────────
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-  function formatDate(iso) {
-    return new Date(iso).toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
-  }
-
-  // ── Enter key shortcuts ───────────────────────────────────────────────
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      if (document.getElementById('login-panel').style.display !== 'none' &&
-          document.getElementById('auth-section').style.display !== 'none') login();
+  document.addEventListener("click", e => {
+    const menu = document.querySelector(".user-menu");
+    if (menu && !menu.contains(e.target)) {
+      document.getElementById("user-dropdown")?.classList.remove("open");
     }
   });
+
+  // ── App ───────────────────────────────────────────────
+  function showApp() {
+    document.getElementById("header-avatar").textContent = (currentUser || "?")[0].toUpperCase();
+    document.getElementById("header-username").textContent = currentUser;
+    document.getElementById("dropdown-username").textContent = currentUser;
+    showView("app");
+    currentPage = 1;
+    loadTasks();
+  }
+
+  function setFilter(filter, btn) {
+    currentFilter = filter; currentPage = 1;
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+    loadTasks();
+  }
+
+  function changePage(delta) {
+    currentPage += delta;
+    loadTasks();
+  }
+
+  async function loadTasks() {
+    const container = document.getElementById("task-list-container");
+    container.innerHTML = '<div class="loading">Loading…</div>';
+
+    let url = `/tasks?page=${currentPage}&limit=${PAGE_SIZE}`;
+    if (currentFilter === "completed") url += "&completed=true";
+    if (currentFilter === "pending")   url += "&completed=false";
+
+    const { ok, data } = await apiFetch(url);
+    if (!ok) {
+      if (data.detail === "Could not validate credentials") { logout(); return; }
+      container.innerHTML = '<div class="loading">Failed to load tasks.</div>';
+      return;
+    }
+
+    const tasks = data.tasks || [];
+    const total = data.total || 0;
+    const totalPages = Math.ceil(total / PAGE_SIZE);
+
+    // Pending count for header badge
+    if (currentFilter === "all") {
+      const pending = tasks.filter(t => !t.completed).length;
+      updatePendingBadge(pending, total);
+    }
+
+    // Count display
+    document.getElementById("task-count").textContent = total + " total";
+
+    // Pagination
+    const pagEl = document.getElementById("pagination");
+    if (totalPages > 1) {
+      pagEl.classList.remove("hidden");
+      document.getElementById("prev-btn").disabled = currentPage <= 1;
+      document.getElementById("next-btn").disabled = currentPage >= totalPages;
+      document.getElementById("page-info").textContent = `Page ${currentPage} of ${totalPages}`;
+    } else {
+      pagEl.classList.add("hidden");
+    }
+
+    if (tasks.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">✓</div>
+          <p class="empty-text">Nothing here. Go add something.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = '<div class="task-list" id="task-list"></div>';
+    const list = document.getElementById("task-list");
+    tasks.forEach(task => list.appendChild(buildTaskEl(task)));
+  }
+
+  function buildTaskEl(task) {
+    const item = document.createElement("div");
+    item.className = "task-item" + (task.completed ? " done" : "");
+    item.dataset.id = task.id;
+
+    const dateStr = task.created_at ? task.created_at.slice(0, 10) : "";
+    const statusHtml = task.completed
+      ? `<span class="status-done">Completed</span>`
+      : `<span class="status-pending">Pending</span>`;
+
+    item.innerHTML = `
+      <label class="checkbox-wrap">
+        <input type="checkbox" ${task.completed ? "checked" : ""}
+          onchange="toggleTask(${task.id}, this.checked)" />
+        <div class="checkbox-custom">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6l3 3 5-5" stroke="#09090b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </label>
+      <div class="task-body">
+        <p class="task-title${task.completed ? " done" : ""}">${escHtml(task.title)}</p>
+        ${task.description ? `<p class="task-desc">${escHtml(task.description)}</p>` : ""}
+        <div class="task-meta">
+          ${statusHtml}
+          <span class="meta-dot">·</span>
+          <span>${dateStr}</span>
+        </div>
+      </div>
+      <button class="task-delete" title="Delete" onclick="deleteTask(${task.id})">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </button>`;
+    return item;
+  }
+
+  function updatePendingBadge(pending, total) {
+    const badge = document.getElementById("pending-badge");
+    if (pending > 0) {
+      badge.textContent = pending + " pending";
+      badge.classList.remove("hidden");
+    } else {
+      badge.classList.add("hidden");
+    }
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  async function createTask() {
+    const titleEl = document.getElementById("task-title");
+    const descEl  = document.getElementById("task-desc");
+    const title = titleEl.value.trim();
+    const description = descEl.value.trim();
+    if (!title) { titleEl.focus(); return; }
+
+    const { ok, data } = await apiFetch("/tasks", {
+      method: "POST",
+      body: JSON.stringify({ title, description: description || undefined })
+    });
+    if (!ok) { alert(data.detail || "Failed to create task"); return; }
+    titleEl.value = ""; descEl.value = "";
+    currentPage = 1;
+    loadTasks();
+  }
+
+  async function toggleTask(id, completed) {
+    await apiFetch(`/tasks/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({ completed })
+    });
+    loadTasks();
+  }
+
+  async function deleteTask(id) {
+    const { ok } = await apiFetch(`/tasks/${id}`, { method: "DELETE" });
+    if (ok) loadTasks();
+  }
+
+  // ── Boot ─────────────────────────────────────────────
+  if (token && currentUser) {
+    showApp();
+  } else {
+    showView("login");
+  }
 </script>
 </body>
 </html>
